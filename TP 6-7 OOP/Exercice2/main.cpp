@@ -27,7 +27,7 @@ int main() {
 			int numerateur = stoi(num); // convertit le string en int
 			int denominateur = stoi(den); // convertit le string en int
 			Fraction f(numerateur, denominateur); // crée une fraction f
-			f.reduce();
+			f.simplifier();
 			tab.push_back(f); // insère la fraction à la fin du tableau
 		}
 		fichier.close();  // on ferme le fichier

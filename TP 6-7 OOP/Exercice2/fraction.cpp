@@ -1,207 +1,161 @@
-#include "Fraction.hpp"
+#include "fraction.hpp"
 
-using namespace std;
-
-Fraction::Fraction()
-{
-	this->num = 0;
-	this->den = 1;
+Fraction::Fraction(int num, int den) {
+    this->num = num;
+    this->den = den;
+    simplifier();
 }
 
-Fraction::Fraction(int num, int den)
-{
-	this->num = num;
-	this->den = den;
+Fraction::Fraction(int num) {
+    this->num = num;
+    this->den = 1;
 }
 
-int Fraction::getNum() const
-{
-	return this->num;
+Fraction::Fraction() {
+    this->num = 0;
+    this->den = 1;
 }
 
-int Fraction::getDen() const
-{
-	return this->den;
+Fraction::Fraction(const Fraction& f) {
+    this->num = f.num;
+    this->den = f.den;
 }
 
-void Fraction::setNum(int newNum)
-{
-	this->num = newNum;
+Fraction Fraction::operator+(const Fraction& f) const {
+    Fraction res;
+    res.num = this->num * f.den + this->den * f.num;
+    res.den = this->den * f.den;
+    res.simplifier();
+    return res;
 }
 
-void Fraction::setDen(int newDen)
-{
-	if (newDen != 0) {
-		this->den = newDen;
-	}
+Fraction Fraction::operator-(const Fraction& f) const {
+    Fraction res;
+    res.num = this->num * f.den - this->den * f.num;
+    res.den = this->den * f.den;
+    res.simplifier();
+    return res;
 }
 
-void Fraction::print()
-{
-	cout << this->num << " / " << this->den << endl;
+Fraction Fraction::operator*(const Fraction& f) const {
+    Fraction res;
+    res.num = this->num * f.num;
+    res.den = this->den * f.den;
+    res.simplifier();
+    return res;
 }
 
-Fraction Fraction::operator+(const Fraction& other)
-{
-	return Fraction(this->num * other.den + this->den * other.num, this->den * other.den);
+Fraction Fraction::operator/(const Fraction& f) const {
+    Fraction res;
+    res.num = this->num * f.den;
+    res.den = this->den * f.num;
+    res.simplifier();
+    return res;
 }
 
-Fraction Fraction::operator-(const Fraction& other)
-{
-	return Fraction(this->num * other.den - other.num * this->den, this->den * other.den);
+Fraction Fraction::operator-() const {
+    Fraction res;
+    res.num = -this->num;
+    res.den = this->den;
+    return res;
 }
 
-Fraction Fraction::operator*(const Fraction& other)
-{
-	return Fraction(this->num * other.num, this->den * other.den);
+Fraction Fraction::operator+() const {
+    Fraction res;
+    res.num = this->num;
+    res.den = this->den;
+    return res;
 }
 
-Fraction Fraction::operator/(const Fraction& other)
-{
-	return Fraction(this->num * other.den, this->den * other.num); // divisier par un nombre c'est multiplier par l'inverse
+Fraction Fraction::operator+=(const Fraction& f) {
+    this->num = this->num * f.den + this->den * f.num;
+    this->den = this->den * f.den;
+    simplifier();
+    return *this;
 }
 
-int pgcd(int q, int r) // calcul du PGCD
-{
-	return r == 0 ? q : pgcd(r, q % r); // Algorithme d'Euclide
+Fraction Fraction::operator-=(const Fraction& f) {
+    this->num = this->num * f.den - this->den * f.num;
+    this->den = this->den * f.den;
+    simplifier();
+    return *this;
 }
 
-int ppcm(int a, int b) // calcul du PPCM
-{
-	return (a * b) / pgcd(a, b);
+Fraction Fraction::operator*=(const Fraction& f) {
+    this->num = this->num * f.num;
+    this->den = this->den * f.den;
+    simplifier();
+    return *this;
 }
 
-void Fraction::reduce()
-{
-	Fraction f;
-	int gcd = pgcd(this->getNum(), this->getDen());
-	f.setNum(this->getNum() / gcd);
-	f.setDen(this->getDen() / gcd);
+Fraction Fraction::operator/=(const Fraction& f) {
+    this->num = this->num * f.den;
+    this->den = this->den * f.num;
+    simplifier();
+    return *this;
 }
 
-Fraction Fraction::same_den(int pcm)
-{
-	Fraction f;
-	f.setNum(this->getNum() * (pcm / this->getDen()));;
-	f.setDen(pcm);
-	return f;
+bool Fraction::operator==(const Fraction& f) const {
+    return this->num == f.num && this->den == f.den;
 }
 
-bool Fraction::operator==(Fraction other)
-{
-	Fraction* f1 = this;
-	Fraction f2 = other;
-	f1->reduce();
-	f2.reduce();
-	if ((f1->getNum() == f2.getNum()) && (f1->getDen() == f2.getDen()))
-	{
-		return true;
-	}
-	return false;
+bool Fraction::operator!=(const Fraction& f) const {
+    return this->num != f.num || this->den != f.den;
 }
 
-bool Fraction::operator!=(Fraction other)
-{
-	Fraction *f1 = this;
-	Fraction f2 = other;
-	f1->reduce();
-	f2.reduce();
-	if ((f1->getNum() != f2.getNum()) || (f1->getDen() != f2.getDen()))
-	{
-		return true;
-	}
-	return false;
+bool Fraction::operator<(const Fraction& f) const {
+    return this->num * f.den < this->den* f.num;
 }
 
-bool Fraction::operator>(Fraction other)
-{
-	if (this->getDen() != other.getDen())
-	{
-		int pcm = ppcm(this->getDen(), other.getDen());
-		Fraction f1, f2;
-		f1.same_den(pcm);
-		f2.same_den(pcm);
-		if ((f1.getNum() > f2.getNum()))
-		{
-			return true;
-		}
-	}
-	else if ((this->getNum() > other.getNum()))
-	{
-		return true;
-	}
-	return false;
+bool Fraction::operator>(const Fraction& f) const {
+    return this->num * f.den > this->den * f.num;
 }
 
-bool Fraction::operator<(Fraction other)
-{
-	if (this->getDen() != other.getDen())
-	{
-		int pcm = ppcm(this->getDen(), other.getDen());
-		Fraction f1, f2;
-		f1.same_den(pcm);
-		f2.same_den(pcm);
-		if ((f1.getNum() < f2.getNum()))
-		{
-			return true;
-		}
-	}
-	else if ((this->getNum() < other.getNum()))
-	{
-		return true;
-	}
-	return false;
+bool Fraction::operator<=(const Fraction& f) const {
+    return this->num * f.den <= this->den * f.num;
 }
 
-bool Fraction::operator>=(Fraction other)
-{
-	if (this->getDen() != other.getDen())
-	{
-		int pcm = ppcm(this->getDen(), other.getDen());
-		Fraction f1, f2;
-		f1.same_den(pcm);
-		f2.same_den(pcm);
-		if ((f1.getNum() >= f2.getNum()))
-		{
-			return true;
-		}
-	}
-	else if ((this->getNum() >= other.getNum()))
-	{
-		return true;
-	}
-	return false;
+bool Fraction::operator>=(const Fraction& f) const {
+    return this->num * f.den >= this->den * f.num;
 }
 
-bool Fraction::operator<=(Fraction other)
-{
-	if (this->getDen() != other.getDen())
-	{
-		int pcm = ppcm(this->getDen(), other.getDen());
-		Fraction f1, f2;
-		f1.same_den(pcm);
-		f2.same_den(pcm);
-		if ((f1.getNum() <= f2.getNum()))
-		{
-			return true;
-		}
-	}
-	else if ((this->getNum() <= other.getNum()))
-	{
-		return true;
-	}
-	return false;
+ostream& operator<<(ostream& os, const Fraction& f) {
+    os << f.getNum() << "/" << f.getDen();
+    return os;
 }
 
-ostream& operator<<(ostream& os, const Fraction& f)
-{
-	os << f.getNum() << "/" << f.getDen();
-	return os;
+istream& operator>>(istream& is, Fraction& f) {
+    is >> f.num >> f.den;
+    return is;
 }
 
-istream& operator>>(istream& is, Fraction& f)
-{
-	is >> f.num >> f.den;
-	f.reduce();
-	return is;
+void Fraction::simplifier() {
+    int a = this->num;
+    int b = this->den;
+    int r = a % b;
+    while (r != 0) {
+        a = b;
+        b = r;
+        r = a % b;
+    }
+    this->num /= b;
+    this->den /= b;
 }
+
+int Fraction::getNum() const {
+    return num;
+}
+
+void Fraction::setNum(int num_) {
+    Fraction::num = num_;
+}
+
+int Fraction::getDen() const {
+    return den;
+}
+
+void Fraction::setDen(int den_) {
+    Fraction::den = den_;
+}
+
+Fraction::~Fraction() = default;
