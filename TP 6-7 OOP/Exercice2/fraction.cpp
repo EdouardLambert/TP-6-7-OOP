@@ -71,26 +71,29 @@ int ppcm(int a, int b) // calcul du PPCM
 	return (a * b) / pgcd(a, b);
 }
 
-Fraction Fraction::reduce()
+void Fraction::reduce()
 {
 	Fraction f;
 	int gcd = pgcd(this->getNum(), this->getDen());
 	f.setNum(this->getNum() / gcd);
 	f.setDen(this->getDen() / gcd);
-	return f;
 }
 
-void Fraction::same_den(int pcm)
+Fraction Fraction::same_den(int pcm)
 {
-	this->setNum(this->getNum() * (pcm / this->getDen()));;
-	this->setDen(pcm);
+	Fraction f;
+	f.setNum(this->getNum() * (pcm / this->getDen()));;
+	f.setDen(pcm);
+	return f;
 }
 
 bool Fraction::operator==(Fraction other)
 {
-	this->reduce();
-	other.reduce();
-	if ((this->getNum() == other.getNum()) && (this->getDen() == other.getDen()))
+	Fraction* f1 = this;
+	Fraction f2 = other;
+	f1->reduce();
+	f2.reduce();
+	if ((f1->getNum() == f2.getNum()) && (f1->getDen() == f2.getDen()))
 	{
 		return true;
 	}
@@ -99,9 +102,11 @@ bool Fraction::operator==(Fraction other)
 
 bool Fraction::operator!=(Fraction other)
 {
-	this->reduce();
-	other.reduce();
-	if ((this->getNum() != other.getNum()) || (this->getDen() != other.getDen()))
+	Fraction *f1 = this;
+	Fraction f2 = other;
+	f1->reduce();
+	f2.reduce();
+	if ((f1->getNum() != f2.getNum()) || (f1->getDen() != f2.getDen()))
 	{
 		return true;
 	}
@@ -113,10 +118,15 @@ bool Fraction::operator>(Fraction other)
 	if (this->getDen() != other.getDen())
 	{
 		int pcm = ppcm(this->getDen(), other.getDen());
-		this->same_den(pcm);
-		other.same_den(pcm);
+		Fraction f1, f2;
+		f1.same_den(pcm);
+		f2.same_den(pcm);
+		if ((f1.getNum() > f2.getNum()))
+		{
+			return true;
+		}
 	}
-	if ((this->getNum() > other.getNum()))
+	else if ((this->getNum() > other.getNum()))
 	{
 		return true;
 	}
@@ -128,10 +138,15 @@ bool Fraction::operator<(Fraction other)
 	if (this->getDen() != other.getDen())
 	{
 		int pcm = ppcm(this->getDen(), other.getDen());
-		this->same_den(pcm);
-		other.same_den(pcm);
+		Fraction f1, f2;
+		f1.same_den(pcm);
+		f2.same_den(pcm);
+		if ((f1.getNum() < f2.getNum()))
+		{
+			return true;
+		}
 	}
-	if ((this->getNum() < other.getNum()))
+	else if ((this->getNum() < other.getNum()))
 	{
 		return true;
 	}
@@ -143,10 +158,15 @@ bool Fraction::operator>=(Fraction other)
 	if (this->getDen() != other.getDen())
 	{
 		int pcm = ppcm(this->getDen(), other.getDen());
-		this->same_den(pcm);
-		other.same_den(pcm);
+		Fraction f1, f2;
+		f1.same_den(pcm);
+		f2.same_den(pcm);
+		if ((f1.getNum() >= f2.getNum()))
+		{
+			return true;
+		}
 	}
-	if ((this->getNum() >= other.getNum()))
+	else if ((this->getNum() >= other.getNum()))
 	{
 		return true;
 	}
@@ -158,10 +178,15 @@ bool Fraction::operator<=(Fraction other)
 	if (this->getDen() != other.getDen())
 	{
 		int pcm = ppcm(this->getDen(), other.getDen());
-		this->same_den(pcm);
-		other.same_den(pcm);
+		Fraction f1, f2;
+		f1.same_den(pcm);
+		f2.same_den(pcm);
+		if ((f1.getNum() <= f2.getNum()))
+		{
+			return true;
+		}
 	}
-	if ((this->getNum() <= other.getNum()))
+	else if ((this->getNum() <= other.getNum()))
 	{
 		return true;
 	}

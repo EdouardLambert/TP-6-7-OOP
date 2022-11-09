@@ -20,8 +20,8 @@ public:
 	void setNum(int newNum);
 	void setDen(int newDen);
 	void print();
-	Fraction reduce();
-	void same_den(int pcm); // met la fraction sur un denominateur commun avec une autre fraction
+	void reduce();
+	Fraction same_den(int pcm); // met la fraction sur un denominateur commun avec une autre fraction
 	Fraction operator+(const Fraction& other); // +
 	Fraction operator-(const Fraction& other); // -
 	Fraction operator*(const Fraction& other); // *
